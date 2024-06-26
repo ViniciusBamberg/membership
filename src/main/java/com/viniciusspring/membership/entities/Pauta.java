@@ -2,24 +2,28 @@ package com.viniciusspring.membership.entities;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Timer;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "pauta")
-public class Pauta implements Serializable{
+public class Pauta implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String pauta;
 	private String localDateTime;
-	
+	@Transient
+	private Timer votingTimer;
+
 	public Pauta() {
 	}
 
@@ -53,7 +57,7 @@ public class Pauta implements Serializable{
 	public void setLocalDateTime(String localDateTime) {
 		this.localDateTime = localDateTime;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(id, pauta);

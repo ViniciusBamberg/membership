@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.viniciusspring.membership.enums.VoteEnum;
 
 import jakarta.persistence.Entity;
@@ -24,9 +26,12 @@ public class Voting implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private int sim;
-	private int nao;
-	private int totalVotes;
+	private Integer sim; 
+    private Integer nao;
+	private Integer totalVotes;
+	
+	@Autowired
+	public VoteEnum vote; 
 
 	@OneToMany
 	public Set<Membership> membership = new HashSet<>();
@@ -38,7 +43,7 @@ public class Voting implements Serializable{
 	public Voting() {
 	}
 
-	public Voting(Long id, int sim, int nao, int totalVotes) {
+	public Voting(Long id, Integer sim, Integer nao, Integer totalVotes) {
 		this.id = id;
 		this.sim = sim;
 		this.nao = nao;
@@ -49,15 +54,15 @@ public class Voting implements Serializable{
 		return id;
 	}
 
-	public int getSim() {
+	public Integer getSim() {
 		return sim;
 	}
 
-	public int getNao() {
+	public Integer getNao() {
 		return nao;
 	}
 
-	public int getTotalVotes() {
+	public Integer getTotalVotes() {
 		return totalVotes;
 	}
 

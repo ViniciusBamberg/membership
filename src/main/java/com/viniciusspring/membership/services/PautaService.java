@@ -2,6 +2,8 @@ package com.viniciusspring.membership.services;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -14,7 +16,9 @@ import com.viniciusspring.membership.repositories.PautaRepository;
 
 @Service
 public class PautaService {
-
+	
+	private Timer votingTimer;
+	
     @Autowired
     private PautaRepository repository;
 
@@ -64,6 +68,34 @@ public class PautaService {
         catch (Exception e) {
             throw new DataIntegrityViolationException("Não é possível excluir pois há entidades relacionadas!");
         }
+    }
+    
+    public void openVotingSession(Pauta pauta, Long votingDurationInSeconds) {
+        if (votingTimer != null) {
+            votingTimer.cancel();
+        }
+        votingTimer = new Timer();
+        TimerTask endVotingTask = new TimerTask() {
+            @Override
+            public void run() {
+                closeVotingSession(pauta);
+            }
+        };
+
+        votingTimer.schedule(endVotingTask, votingDurationInSeconds * 1000);
+        System.out.println("Sessão de votação aberta por " + votingDurationInSeconds + " segundos para a pauta: " + pauta.getPauta());
+    }
+
+    public void openVotingSession(Pauta pauta) {
+    	openVotingSession(pauta, 60L);
+    }
+
+    public void closeVotingSession(Pauta pauta) {
+    	if (votingTimer != null) {
+    		votingTimer.cancel();
+    		votingTimer = null;
+    		System.out.println("Sessão de votação fechada para a pauta: " + pauta.getPauta());
+    	}
     }
 }
 
