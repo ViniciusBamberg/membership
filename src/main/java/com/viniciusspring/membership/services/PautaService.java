@@ -20,10 +20,10 @@ public class PautaService {
 	private Timer votingTimer;
 	
     @Autowired
-    private PautaRepository repository;
+    private PautaRepository pautaRepository;
 
     public Optional<Pauta> findById(Long id) throws PautaException {
-        Optional<Pauta> pauta = repository.findById(id);
+        Optional<Pauta> pauta = pautaRepository.findById(id);
         if (pauta.isEmpty()) {
             throw new PautaException("Pauta não encontrada!", id);
         }
@@ -32,12 +32,12 @@ public class PautaService {
 
     @Transactional
     public List<Pauta> findAll() {
-        return repository.findAll();
+        return pautaRepository.findAll();
     }
 
     @Transactional
     public Pauta create(Pauta pauta) {
-        return repository.save(pauta);
+        return pautaRepository.save(pauta);
     }
 
     @Transactional
@@ -52,7 +52,7 @@ public class PautaService {
         existingPauta.setPauta(pauta.getPauta());
         existingPauta.setLocalDateTime(pauta.getLocalDateTime());
 
-        return repository.save(existingPauta);
+        return pautaRepository.save(existingPauta);
     }
 
     public void delete(Long id) throws PautaException {
@@ -63,7 +63,7 @@ public class PautaService {
         }
 
         try {
-            repository.deleteById(id);
+        	pautaRepository.deleteById(id);
         } 
         catch (Exception e) {
             throw new DataIntegrityViolationException("Não é possível excluir pois há entidades relacionadas!");

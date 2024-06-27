@@ -5,96 +5,97 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.viniciusspring.membership.enums.VoteEnum;
 
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "votação")
-public class Voting implements Serializable{
-	private static final long serialVersionUID = 1L;
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	private Integer sim; 
-    private Integer nao;
-	private Integer totalVotes;
-	
-	@Autowired
-	public VoteEnum vote; 
+@Table(name = "votacao")
+public class Voting implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-	@OneToMany
-	public Set<Membership> membership = new HashSet<>();
-	
-	@OneToOne
-	@JoinColumn(name = "pauta")
-	public Pauta pauta;
-	
-	public Voting() {
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private Integer totalVotes;
+    private Integer simVotes;
+    private Integer naoVotes;
 
-	public Voting(Long id, Integer sim, Integer nao, Integer totalVotes) {
-		this.id = id;
-		this.sim = sim;
-		this.nao = nao;
-		this.totalVotes = totalVotes;
-	}
+    @ElementCollection
+    private Set<Long> votedMembershipIds = new HashSet<>();
 
-	public Long getId() {
-		return id;
-	}
+    @OneToOne
+    @JoinColumn(name = "pauta_id")
+    private Pauta pauta;
 
-	public Integer getSim() {
-		return sim;
-	}
+    public Voting() {
+    }
 
-	public Integer getNao() {
-		return nao;
-	}
+    public Voting(Pauta pauta) {
+        this.pauta = pauta;
+    }
 
-	public Integer getTotalVotes() {
-		return totalVotes;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void incrementVote(VoteEnum vote) {
-		if (vote == VoteEnum.SIM) {
-			this.sim++;
-		} else if (vote == VoteEnum.NAO) {
-			this.nao++;
-		}
-		this.totalVotes++;
-	}
+    public Integer getTotalVotes() {
+        return totalVotes;
+    }
 
-	/*public List<Membership> getMembership() {
-		return membership;
-	}
+    public Integer getSimVotes() {
+        return simVotes;
+    }
 
-	public void setMembership(List<Membership> membership) {
-		this.membership = membership;
-	}*/
+    public Integer getNaoVotes() {
+        return naoVotes;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(id);
-	}
+    public void incrementVote(VoteEnum voteEnum, Long membershipId) {
+        if (votedMembershipIds.contains(membershipId)) {
+            throw new RuntimeException("Associado já votou.");
+        }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null || getClass() != obj.getClass())
-			return false;
-		Voting other = (Voting) obj;
-		return Objects.equals(id, other.id);
-	}
+        votedMembershipIds.add(membershipId);
+
+        if (voteEnum == VoteEnum.SIM) {
+            this.simVotes++;
+        } 
+        else if (voteEnum == VoteEnum.NAO) {
+            this.naoVotes++;
+        }
+        this.totalVotes++;
+    }
+
+    public Pauta getPauta() {
+        return pauta;
+    }
+
+    public void setPauta(Pauta pauta) {
+        this.pauta = pauta;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Voting other = (Voting) obj;
+        return Objects.equals(id, other.id);
+    }
 }

@@ -16,10 +16,10 @@ import com.viniciusspring.membership.repositories.MembershipRepository;
 public class MembershipService {
 
     @Autowired
-    private MembershipRepository repository;
+    private MembershipRepository membershipRepository;
 
     public Optional<Membership> findById(Long id) {
-        Optional<Membership> membership = repository.findById(id);
+        Optional<Membership> membership = membershipRepository.findById(id);
         if (membership.isEmpty()) {
             throw new MembershipException("Usuário não encontrado!", null);
         }
@@ -28,13 +28,13 @@ public class MembershipService {
     
     @Transactional
     public List<Membership> findAll() {
-    	List<Membership> list = repository.findAll();
+    	List<Membership> list = membershipRepository.findAll();
     	return list;
     }
 
     @Transactional
     public Membership create(Membership membership) {
-        return repository.save(membership);
+        return membershipRepository.save(membership);
     }
 
     @Transactional
@@ -50,7 +50,7 @@ public class MembershipService {
         existingMembership.setBirthday(membership.getBirthday());
         existingMembership.setDocument(membership.getDocument());
 
-        return repository.save(existingMembership);
+        return membershipRepository.save(existingMembership);
     }
 
     public void delete(Long id) {
@@ -61,7 +61,7 @@ public class MembershipService {
         }
 
         try {
-            repository.deleteById(id);
+        	membershipRepository.deleteById(id);
         } 
         catch (Exception e) {
             throw new DataIntegrityViolationException("Não é possível excluir pois há entidades relacionadas!");

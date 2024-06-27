@@ -6,13 +6,16 @@ public class MembershipException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     private Membership membership;
+    
+    public MembershipException() {
+    }
 
     public MembershipException(String message, Membership membership) {
         super(message);
         this.membership = membership;
     }
 
-    public Membership getMembership() {
+	public Membership getMembership() {
         return membership;
     }
 

@@ -7,34 +7,56 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.viniciusspring.membership.entities.Membership;
+import com.viniciusspring.membership.entities.Pauta;
 import com.viniciusspring.membership.entities.Voting;
 import com.viniciusspring.membership.enums.VoteEnum;
+import com.viniciusspring.membership.exceptions.Membership2Exception;
 import com.viniciusspring.membership.exceptions.VotingException;
+import com.viniciusspring.membership.repositories.MembershipRepository;
+import com.viniciusspring.membership.repositories.PautaRepository;
 import com.viniciusspring.membership.repositories.VotingRepository;
 
 @Service
 public class VotingService {
 
-	@Autowired
-	private VotingRepository repository;
+    @Autowired
+    private VotingRepository votingRepository;
 
-	@Transactional
-	public Voting vote(Long id, VoteEnum vote) {
-		Optional<Voting> votingOpt = repository.findById(id);
-		if (votingOpt.isEmpty()) {
-			throw new VotingException("Resultado não encontrado!", id);
-		}
+    @Autowired
+    private MembershipRepository membershipRepository;
 
-		Voting voting = votingOpt.get();
-		voting.incrementVote(vote);
-		return repository.save(voting);
-	}
+    @Autowired
+    private PautaRepository pautaRepository;
+    
+    @Transactional
+    public void vote(Long pautaId, Long membershipId, VoteEnum voteEnum)throws Membership2Exception,VotingException{
+        
+    	Optional<Membership> membershipOpt = membershipRepository.findById(membershipId);
+        if (!membershipOpt.isPresent()) {
+            throw new Membership2Exception("Inválido id de associado!", membershipId);
+        }
+        
+    	Optional<Pauta> pautaOpt = pautaRepository.findById(pautaId);
+        if (!pautaOpt.isPresent()) {
+            throw new VotingException("Inválido id de pauta!", pautaId);
+        }
 
-	public Voting getVoting(Long id) {
-		return repository.findById(id).orElseThrow(() -> new VotingException("Resultado não encontrado!", id));
-	}
+        Pauta pauta = pautaOpt.get();
 
-	public List<Voting> findAll() {
-		return repository.findAll();
-	}
+        Voting voting = votingRepository.findByPauta(pauta).orElse(new Voting(pauta));
+
+        voting.incrementVote(voteEnum, membershipId);
+        votingRepository.save(voting);
+    }
+
+    public Voting getVoting(Long id) {
+        return votingRepository.findById(id)
+                .orElseThrow(() -> new VotingException("Inválido id de votação!", id));
+    }
+
+    public List<Voting> findAll() {
+        return votingRepository.findAll();
+    }
 }
+
