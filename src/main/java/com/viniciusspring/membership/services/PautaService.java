@@ -70,8 +70,8 @@ public class PautaService {
         }
     }
     
-    public void openVotingSession(Pauta pauta, Long votingDurationInSeconds) {
-        if (votingTimer != null) {
+    public String openVotingSession(Pauta pauta, Long votingDurationInSeconds) {
+       	if (votingTimer != null) {
             votingTimer.cancel();
         }
         votingTimer = new Timer();
@@ -82,20 +82,21 @@ public class PautaService {
             }
         };
 
-        votingTimer.schedule(endVotingTask, votingDurationInSeconds * 1000);
-        System.out.println("Sessão de votação aberta por " + votingDurationInSeconds + " segundos para a pauta: " + pauta.getPauta());
+        votingTimer.schedule(endVotingTask, votingDurationInSeconds * 60000);
+        return "Sessão de votação aberta por " + votingDurationInSeconds + " segundos para a pauta: " + pauta.getPauta();
+      
     }
 
-    public void openVotingSession(Pauta pauta) {
-    	openVotingSession(pauta, 60L);
+    public String openVotingSession(Pauta pauta) {
+    	return openVotingSession(pauta, 60L);
     }
 
-    public void closeVotingSession(Pauta pauta) {
-    	if (votingTimer != null) {
-    		votingTimer.cancel();
-    		votingTimer = null;
-    		System.out.println("Sessão de votação fechada para a pauta: " + pauta.getPauta());
-    	}
-    }
+    public String closeVotingSession(Pauta pauta) {
+    		if (votingTimer != null) {
+				votingTimer.cancel();
+				votingTimer = null;
+			}
+    	return "Sessão de votação fechada para a pauta: " + pauta.getPauta();
+	}
 }
 

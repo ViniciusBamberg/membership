@@ -9,7 +9,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 
@@ -28,9 +27,6 @@ public class Pauta implements Serializable {
 	@Transient
 	private Timer votingTimer;
 	
-	@OneToOne(mappedBy = "pauta")
-    private Voting voting;
-
 	public Pauta() {
 	}
 
@@ -65,14 +61,6 @@ public class Pauta implements Serializable {
 		this.localDateTime = localDateTime;
 	}
 	
-	public Voting getVoting() {
-        return voting;
-    }
-
-    public void setVoting(Voting voting) {
-        this.voting = voting;
-    }
-
 	@Override
 	public int hashCode() {
 		return Objects.hash(id, pauta);

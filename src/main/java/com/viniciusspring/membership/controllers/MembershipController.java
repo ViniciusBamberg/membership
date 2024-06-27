@@ -51,6 +51,8 @@ public class MembershipController {
 	public Membership update(@PathVariable Long id, @RequestBody Membership newMembership) {
 		Membership updateMembership = service.findById(id).orElseThrow();
 		updateMembership.setName(newMembership.getName());
+		updateMembership.setBirthday(newMembership.getBirthday());
+		updateMembership.setDocument(newMembership.getDocument());
 		return service.create(updateMembership);		
 	}
 }

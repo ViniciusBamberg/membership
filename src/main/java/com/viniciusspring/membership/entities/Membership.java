@@ -47,11 +47,6 @@ public class Membership implements Serializable {
 		this.name = name;
 	}
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(id, name);
-	}
-	
 	public String getBirthday() {
 		return birthday;
 	}
@@ -68,6 +63,11 @@ public class Membership implements Serializable {
 		this.document = document;
 	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, name);
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

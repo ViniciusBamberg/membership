@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.viniciusspring.membership.entities.Pauta;
@@ -55,16 +54,4 @@ public class PautaController {
 		updatePautaObj.setLocalDateTime(newPauta.getLocalDateTime());
 		return pautaService.update(updatePautaObj);		
 	}
-	
-    @PostMapping("/{id}/openVoting")
-    public void openVoting(@PathVariable Long id, @RequestParam(required = false) Long duration) {
-        Pauta pautaObj = findById(id);
-
-        if (duration != null) {
-        	pautaService.openVotingSession(pautaObj, duration);
-        } 
-        else {
-        	pautaService.openVotingSession(pautaObj);
-        }
-    } 
 }
