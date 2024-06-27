@@ -7,6 +7,7 @@ import java.util.Set;
 
 import com.viniciusspring.membership.enums.VoteEnum;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,10 +25,15 @@ public class Voting implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Integer totalVotes;
-    private Integer simVotes;
-    private Integer naoVotes;
-
+    @Column
+    private Integer totalVotes = 0;
+    @Column
+    private Integer simVotes = 0;
+    @Column
+    private Integer naoVotes = 0;
+    @Column
+    private String result;
+    
     @ElementCollection
     private Set<Long> votedMembershipIds = new HashSet<>();
 
@@ -72,6 +78,19 @@ public class Voting implements Serializable {
             this.naoVotes++;
         }
         this.totalVotes++;
+    }
+    
+    public String getResult() {
+    	if (simVotes > naoVotes) {
+    		result = "Pauta aprovada!";
+    	}
+    	else if (simVotes < naoVotes) {
+    		result = "Pauta reprovada!";
+    	}
+    	else {
+    		result = "Pauta empatada!";
+    	}
+    	return result;
     }
 
     public Pauta getPauta() {

@@ -23,7 +23,7 @@ public class VotingController {
 
     @Autowired
     private VotingService votingService;
-
+    
     @GetMapping
     public List<Voting> findAll() {
         return votingService.findAll();
@@ -40,9 +40,16 @@ public class VotingController {
     	try {
     		votingService.vote(pautaId, voteRequest.getMembershipId(), voteRequest.getVote());
             return ResponseEntity.ok().build();
-    	}catch(Membership2Exception | VotingException ex) {
+    	}
+    	catch(Membership2Exception | VotingException ex) {
     		throw ex;
     	}
+    }
+    
+    @GetMapping("/{pautaId}/result")
+    public ResponseEntity<String> getVotingResult(@PathVariable Long pautaId) {
+        String result = votingService.getVotingResult(pautaId);
+        return ResponseEntity.ok(result);
     }
 }
 

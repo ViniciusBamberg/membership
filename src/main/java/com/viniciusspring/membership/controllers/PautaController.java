@@ -21,52 +21,50 @@ import com.viniciusspring.membership.services.PautaService;
 public class PautaController {
 
 	@Autowired
-	private PautaService service;
+	private PautaService pautaService;
 
 	@GetMapping
 	public List<Pauta> findAll(){
-		List<Pauta> result = service.findAll();
-		return result;
+		List<Pauta> pautaObj = pautaService.findAll();
+		return pautaObj;
 	}
 	
 	@GetMapping(value = "/{id}")
 	public Pauta findById(@PathVariable Long id) {
-		Pauta result = service.findById(id).get();
-		return result;
+		Pauta pautaObj = pautaService.findById(id).get();
+		return pautaObj;
 	}
 	
 	@PostMapping
 	public Pauta insert(@RequestBody Pauta pauta) {
-		Pauta result = service.create(pauta);
-		return result;	
+		Pauta pautaObj = pautaService.create(pauta);
+		return pautaObj;	
 	}
 	
 	@DeleteMapping(value = "/{id}")
 	public Pauta delete(@PathVariable Long id) {
-		Pauta pauta = service.findById(id).orElseThrow();
-		service.delete(id);
-		return pauta;
+		Pauta pautaObj = pautaService.findById(id).orElseThrow();
+		pautaService.delete(id);
+		return pautaObj;
 	}
 	
 	@PutMapping(value = "/{id}")
 	public Pauta update(@PathVariable Long id, @RequestBody Pauta newPauta) {
-		Pauta updatePauta = service.findById(id).orElseThrow();
-		updatePauta.setPauta(newPauta.getPauta());
-		updatePauta.setLocalDateTime(newPauta.getLocalDateTime());
-		return service.update(updatePauta);		
+		Pauta updatePautaObj = pautaService.findById(id).orElseThrow();
+		updatePautaObj.setPauta(newPauta.getPauta());
+		updatePautaObj.setLocalDateTime(newPauta.getLocalDateTime());
+		return pautaService.update(updatePautaObj);		
 	}
 	
     @PostMapping("/{id}/openVoting")
     public void openVoting(@PathVariable Long id, @RequestParam(required = false) Long duration) {
-        Pauta pauta = findById(id);
+        Pauta pautaObj = findById(id);
 
         if (duration != null) {
-            service.openVotingSession(pauta, duration);
+        	pautaService.openVotingSession(pautaObj, duration);
         } 
         else {
-            service.openVotingSession(pauta);
+        	pautaService.openVotingSession(pautaObj);
         }
-    }
-
- 
+    } 
 }

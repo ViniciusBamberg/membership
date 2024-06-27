@@ -58,5 +58,10 @@ public class VotingService {
     public List<Voting> findAll() {
         return votingRepository.findAll();
     }
+    
+    public String getVotingResult(Long id) {
+        Voting voting = getVoting(id);
+        return voting.getResult();
+    }
 }
 
